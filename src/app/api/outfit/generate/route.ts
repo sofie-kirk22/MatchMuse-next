@@ -78,11 +78,9 @@ async function generateOutfitImage(attributes: any) {
   const desc = (k: string) => {
     const a = attributes?.[k];
     if (!a) return "";
-    return `${k}: ${a.garmentType || k}, colors ${
-      a.colorPalette?.join(", ") || a.colorMain || ""
-    }, material ${a.material || ""}, style ${
-      a.styleWords?.join(", ") || ""
-    }, patterns ${a.notablePatterns || "none"}.`;
+    return `${k}: ${a.garmentType || k}, colors ${a.colorPalette?.join(", ") || a.colorMain || ""
+      }, material ${a.material || ""}, style ${a.styleWords?.join(", ") || ""
+      }, patterns ${a.notablePatterns || "none"}.`;
   };
 
   const outfitPrompt = `
@@ -103,10 +101,11 @@ Avoid logos or brand marks. Camera: mid-shot, straight-on, soft shadows.
     size: "1024x1024",
   });
 
-  const b64 = image.data[0].b64_json;
-  if (!b64) throw new Error("No image b64 returned");
-
-  return b64;
+  const first = image.data?.[0];
+  if (!first?.b64_json) {
+    throw new Error("Image API returned no base64 image data");
+  }
+  return first.b64_json;
 }
 
 export async function GET() {
