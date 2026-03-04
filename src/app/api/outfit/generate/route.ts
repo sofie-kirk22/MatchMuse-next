@@ -153,7 +153,7 @@ export async function GET() {
       imageUrl: blob.url,
       attributes,
       blobPathname: blob.pathname,
-      uploadedAt: blob.uploadedAt,
+      createdAt: new Date().toISOString(),
     });
   } catch (e: any) {
     console.error("Generate outfit failed:", e?.message || e);
