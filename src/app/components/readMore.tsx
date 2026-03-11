@@ -19,7 +19,7 @@ export default function ReadMore({ children, maxHeight = 160 }: ReadMoreProps) {
         {children}
 
         {!expanded && (
-          <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white dark:from-black to-transparent" />
+          <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-rose-100 dark:from-black to-transparent" />
         )}
       </div>
 

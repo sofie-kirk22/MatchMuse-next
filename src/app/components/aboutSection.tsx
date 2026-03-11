@@ -2,7 +2,7 @@ import ReadMore from "./readMore";
 
 export default function AboutSection() {
   return (
-    <section id="about" className="py-20 bg-zinc-50 dark:bg-black">
+    <section id="about" className="py-20 bg-rose-100 dark:bg-black">
       <div className="mx-auto max-w-3xl px-6 space-y-6">
         <h2 className="text-3xl font-semibold">About MatchMuse</h2>
 
