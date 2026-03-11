@@ -92,7 +92,7 @@ export default function OutfitGenerator() {
           disabled={loading}
           className="
             rounded-full px-6 py-3 text-sm font-medium transition
-            bg-black text-white hover:bg-zinc-900 disabled:opacity-60
+            bg-rose-200 text-black hover:bg-zinc-200 disabled:opacity-60
             dark:bg-white dark:text-black dark:hover:bg-zinc-200
           "
         >
