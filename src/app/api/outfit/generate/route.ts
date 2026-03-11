@@ -10,7 +10,7 @@ export const runtime = "nodejs"; // we need Node for fs
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-const uploadsRoot = path.join(process.cwd(), "uploads");
+const uploadsRoot = path.join(process.cwd(), "Uploaded_articles");
 
 const CATEGORIES = ["tops", "bottoms", "shoes", "accessories", "outerwear"] as const;
 
@@ -141,7 +141,7 @@ export async function GET() {
 
     // Upload to Vercel Blob (public)
     const buf = Buffer.from(imageB64, "base64");
-    const filename = `outfits/outfit-${Date.now()}-${crypto.randomUUID()}.png`;
+    const filename = `Generated_outfits/outfit-${Date.now()}-${crypto.randomUUID()}.png`;
 
     const blob = await put(filename, buf, {
       access: "public",

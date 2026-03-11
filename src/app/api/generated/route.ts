@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 
 export async function GET() {
   try {
-    const { blobs } = await list({ prefix: "outfits/" });
+    const { blobs } = await list({ prefix: "Generated_outfits/" });
 
     const items = blobs
       .slice()
@@ -14,7 +14,7 @@ export async function GET() {
           new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
       )
       .map((b) => ({
-        filename: b.pathname.replace("outfits/", ""),
+        filename: b.pathname.replace("Generated_outfits/", ""),
         url: b.url,
         uploadedAt: b.uploadedAt,
       }));
