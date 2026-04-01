@@ -22,7 +22,7 @@ export default function TopNav() {
         {/* Brand */}
         <a
           href="#"
-          className="text-sm font-semibold tracking-wide hover:opacity-70 transition"
+          className="flex items-center gap-2 text-sm font-semibold tracking-wide hover:opacity-70 transition"
           onClick={closeMenu}
         >
           <Icon lightSrc={"/images/logo.png"} darkSrc={"/images/logo.png"} alt={"logo"} />
