@@ -20,12 +20,12 @@ export default function TopNav() {
     <nav className="sticky top-0 z-50 border-b border-zinc-200 bg-rose-200 backdrop-blur-md dark:border-zinc-800 dark:bg-black/70">
       <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
         {/* Brand */}
-        <Icon lightSrc={"/my-project-next/logo.png"} darkSrc={"/my-project-next/logo.png"} alt={"logo"} />
         <a
           href="#"
           className="text-sm font-semibold tracking-wide hover:opacity-70 transition"
           onClick={closeMenu}
         >
+          <Icon lightSrc={"/images/logo.png"} darkSrc={"/images/logo.png"} alt={"logo"} />
           MatchMuse
         </a>
 
