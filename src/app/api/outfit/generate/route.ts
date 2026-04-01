@@ -1,37 +1,46 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-import mime from "mime-types";
 import OpenAI from "openai";
-import { put } from "@vercel/blob";
+import { put, list } from "@vercel/blob";
 import crypto from "crypto";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const CATEGORIES = ["tops", "bottoms", "shoes", "accessories", "outerwear"] as const;
 
-const uploadsRoot = path.join(process.cwd(), "Uploaded_articles");
-
-const CATEGORIES = ["Tops", "Bottoms", "Shoes", "Accessories", "Outerwear"] as const;
-
-function pickOne(category: string) {
-  const folder = path.join(uploadsRoot, category);
-  const files = fs.existsSync(folder)
-    ? fs.readdirSync(folder).filter((f) => /\.(png|jpe?g|webp)$/i.test(f))
-    : [];
-
-  if (!files.length) return null;
-  const file = files[Math.floor(Math.random() * files.length)];
-  return { category, file };
+function getOpenAIClient() {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) throw new Error("Missing OPENAI_API_KEY");
+  return new OpenAI({ apiKey });
 }
 
-function toDataUrl(fp: string) {
-  const b64 = fs.readFileSync(fp).toString("base64");
-  const mt = mime.lookup(fp) || "image/jpeg";
-  return `data:${mt};base64,${b64}`;
+async function pickOneFromBlob(category: string) {
+  const { blobs } = await list({ prefix: `Uploaded_articles/${category}/` });
+
+  const imageBlobs = blobs.filter((b) =>
+    /\.(png|jpe?g|webp)$/i.test(b.pathname)
+  );
+
+  if (!imageBlobs.length) return null;
+
+  return imageBlobs[Math.floor(Math.random() * imageBlobs.length)];
 }
 
-async function analyzeItemsLocalFiles(localPaths: Record<string, string>) {
+async function urlToDataUrl(url: string) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to fetch image: ${url}`);
+
+  const contentType = res.headers.get("content-type") || "image/jpeg";
+  const arrayBuffer = await res.arrayBuffer();
+  const base64 = Buffer.from(arrayBuffer).toString("base64");
+
+  return `data:${contentType};base64,${base64}`;
+}
+
+async function analyzeItemsFromUrls(
+  openai: OpenAI,
+  imageUrls: Record<string, string>
+) {
   const prompt = `
 Return ONLY a JSON object. No markdown fences, no explanations.
 For each image (top, bottom, shoes, accessories, outerwear), include:
@@ -46,20 +55,20 @@ For each image (top, bottom, shoes, accessories, outerwear), include:
   const content: any[] = [
     { type: "input_text", text: prompt },
 
-    { type: "input_text", text: "Top:" },
-    { type: "input_image", image_url: toDataUrl(localPaths.top) },
+    { type: "input_text", text: "top:" },
+    { type: "input_image", image_url: await urlToDataUrl(imageUrls.top) },
 
-    { type: "input_text", text: "Bottom:" },
-    { type: "input_image", image_url: toDataUrl(localPaths.bottom) },
+    { type: "input_text", text: "bottom:" },
+    { type: "input_image", image_url: await urlToDataUrl(imageUrls.bottom) },
 
-    { type: "input_text", text: "Shoes:" },
-    { type: "input_image", image_url: toDataUrl(localPaths.shoes) },
+    { type: "input_text", text: "shoes:" },
+    { type: "input_image", image_url: await urlToDataUrl(imageUrls.shoes) },
 
-    { type: "input_text", text: "Accessories:" },
-    { type: "input_image", image_url: toDataUrl(localPaths.accessories) },
+    { type: "input_text", text: "accessories:" },
+    { type: "input_image", image_url: await urlToDataUrl(imageUrls.accessories) },
 
-    { type: "input_text", text: "Outerwear:" },
-    { type: "input_image", image_url: toDataUrl(localPaths.outerwear) },
+    { type: "input_text", text: "outerwear:" },
+    { type: "input_image", image_url: await urlToDataUrl(imageUrls.outerwear) },
   ];
 
   const res = await openai.responses.create({
@@ -74,13 +83,15 @@ For each image (top, bottom, shoes, accessories, outerwear), include:
   return JSON.parse(text);
 }
 
-async function generateOutfitImage(attributes: any) {
+async function generateOutfitImage(openai: OpenAI, attributes: any) {
   const desc = (k: string) => {
     const a = attributes?.[k];
     if (!a) return "";
-    return `${k}: ${a.garmentType || k}, colors ${a.colorPalette?.join(", ") || a.colorMain || ""
-      }, material ${a.material || ""}, style ${a.styleWords?.join(", ") || ""
-      }, patterns ${a.notablePatterns || "none"}.`;
+    return `${k}: ${a.garmentType || k}, colors ${
+      a.colorPalette?.join(", ") || a.colorMain || ""
+    }, material ${a.material || ""}, style ${
+      a.styleWords?.join(", ") || ""
+    }, patterns ${a.notablePatterns || "none"}.`;
   };
 
   const outfitPrompt = `
@@ -105,41 +116,43 @@ Avoid logos or brand marks. Camera: mid-shot, straight-on, soft shadows.
   if (!first?.b64_json) {
     throw new Error("Image API returned no base64 image data");
   }
+
   return first.b64_json;
 }
 
 export async function GET() {
   try {
-    if (!process.env.OPENAI_API_KEY) {
-      return NextResponse.json({ error: "Missing OPENAI_API_KEY" }, { status: 500 });
-    }
+    const openai = getOpenAIClient();
 
-    // pick files
     const picks = Object.fromEntries(
-      CATEGORIES.map((c) => {
-        const picked = pickOne(c);
-        return [c, picked?.file ?? null];
-      })
-    ) as Record<string, string | null>;
+      await Promise.all(
+        CATEGORIES.map(async (category) => {
+          const blob = await pickOneFromBlob(category);
+          return [category, blob];
+        })
+      )
+    ) as Record<string, Awaited<ReturnType<typeof pickOneFromBlob>>>;
 
-    for (const c of CATEGORIES) {
-      if (!picks[c]) {
-        return NextResponse.json({ error: `No images in /uploads/${c}` }, { status: 400 });
+    for (const category of CATEGORIES) {
+      if (!picks[category]) {
+        return NextResponse.json(
+          { error: `No images found in Blob folder Uploaded_articles/${category}/` },
+          { status: 400 }
+        );
       }
     }
 
-    const localPaths = {
-      top: path.join(uploadsRoot, "tops", picks.tops!),
-      bottom: path.join(uploadsRoot, "bottoms", picks.bottoms!),
-      shoes: path.join(uploadsRoot, "shoes", picks.shoes!),
-      accessories: path.join(uploadsRoot, "accessories", picks.accessories!),
-      outerwear: path.join(uploadsRoot, "outerwear", picks.outerwear!),
+    const imageUrls = {
+      top: picks.tops!.url,
+      bottom: picks.bottoms!.url,
+      shoes: picks.shoes!.url,
+      accessories: picks.accessories!.url,
+      outerwear: picks.outerwear!.url,
     };
 
-    const attributes = await analyzeItemsLocalFiles(localPaths);
-    const imageB64 = await generateOutfitImage(attributes);
+    const attributes = await analyzeItemsFromUrls(openai, imageUrls);
+    const imageB64 = await generateOutfitImage(openai, attributes);
 
-    // Upload to Vercel Blob (public)
     const buf = Buffer.from(imageB64, "base64");
     const filename = `Generated_outfits/outfit-${Date.now()}-${crypto.randomUUID()}.png`;
 
@@ -148,15 +161,18 @@ export async function GET() {
       contentType: "image/png",
     });
 
-    // Return a public URL that works in production
     return NextResponse.json({
       imageUrl: blob.url,
       attributes,
       blobPathname: blob.pathname,
+      sourceUrls: imageUrls,
       createdAt: new Date().toISOString(),
     });
   } catch (e: any) {
     console.error("Generate outfit failed:", e?.message || e);
-    return NextResponse.json({ error: "Failed to generate outfit" }, { status: 500 });
+    return NextResponse.json(
+      { error: e?.message || "Failed to generate outfit" },
+      { status: 500 }
+    );
   }
 }
