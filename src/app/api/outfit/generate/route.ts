@@ -6,7 +6,7 @@ import OpenAI from "openai";
 import { put } from "@vercel/blob";
 import crypto from "crypto";
 
-export const runtime = "nodejs"; // we need Node for fs
+export const runtime = "nodejs";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
