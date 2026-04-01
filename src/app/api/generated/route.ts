@@ -1,11 +1,18 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { list } from "@vercel/blob";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const { blobs } = await list({ prefix: "Generated_outfits/" });
+    const cursor = req.nextUrl.searchParams.get("cursor") || undefined;
+
+    const { blobs, cursor: nextCursor, hasMore } = await list({
+      prefix: "Generated_outfits/",
+      limit: 6,
+      cursor,
+    });
 
     const items = blobs
       .slice()
@@ -19,7 +26,10 @@ export async function GET() {
         uploadedAt: b.uploadedAt,
       }));
 
-    return NextResponse.json(items);
+    return NextResponse.json({
+      items,
+      nextCursor: hasMore ? nextCursor : null,
+    });
   } catch (e: any) {
     console.error("Failed to list generated images:", e?.message || e);
     return NextResponse.json(

@@ -12,31 +12,48 @@ type HistoryItem = {
   uploadedAt: string;
 };
 
+type HistoryResponse =
+  | {
+      items: HistoryItem[];
+      nextCursor: string | null;
+    }
+  | {
+      error: string;
+    };
+
 export default function OutfitGenerator() {
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // History state
   const [showHistory, setShowHistory] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [historyError, setHistoryError] = useState<string | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
 
-  async function loadHistory() {
+  async function loadHistory(reset = false) {
     setHistoryLoading(true);
     setHistoryError(null);
 
     try {
-      const res = await fetch("/api/generated", { method: "GET" });
-      const data = await res.json();
+      const cursorToUse = reset ? null : nextCursor;
+      const url = cursorToUse
+        ? `/api/generated?cursor=${encodeURIComponent(cursorToUse)}`
+        : "/api/generated";
 
-      if (!res.ok) {
-        setHistoryError(data?.error || "Failed to load history");
+      const res = await fetch(url, { method: "GET" });
+      const data: HistoryResponse = await res.json();
+
+      if (!res.ok || "error" in data) {
+        setHistoryError(
+          "error" in data ? data.error : "Failed to load history"
+        );
         return;
       }
 
-      setHistory(Array.isArray(data) ? data : []);
+      setHistory((prev) => (reset ? data.items : [...prev, ...data.items]));
+      setNextCursor(data.nextCursor);
     } catch {
       setHistoryError("Network error while loading history.");
     } finally {
@@ -60,12 +77,14 @@ export default function OutfitGenerator() {
       if ("imageUrl" in data && data.imageUrl) {
         setImageUrl(data.imageUrl);
 
-        // Optional: log attributes for debugging
-        if ("attributes" in data) console.log("Attributes used:", data.attributes);
+        if ("attributes" in data) {
+          console.log("Attributes used:", data.attributes);
+        }
 
-        // If history is visible, refresh it so the new image appears
         if (showHistory) {
-          loadHistory();
+          setHistory([]);
+          setNextCursor(null);
+          await loadHistory(true);
         }
       } else {
         setError("No image returned.");
@@ -77,10 +96,12 @@ export default function OutfitGenerator() {
     }
   }
 
-  // Load history only when user opens it
   useEffect(() => {
-    if (showHistory) loadHistory();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (showHistory) {
+      setHistory([]);
+      setNextCursor(null);
+      loadHistory(true);
+    }
   }, [showHistory]);
 
   return (
@@ -124,7 +145,6 @@ export default function OutfitGenerator() {
         />
       )}
 
-      {/* History */}
       {showHistory && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
@@ -132,7 +152,11 @@ export default function OutfitGenerator() {
 
             <button
               type="button"
-              onClick={loadHistory}
+              onClick={() => {
+                setHistory([]);
+                setNextCursor(null);
+                loadHistory(true);
+              }}
               disabled={historyLoading}
               className="text-sm underline hover:opacity-70 transition disabled:opacity-50"
             >
@@ -174,6 +198,22 @@ export default function OutfitGenerator() {
               </a>
             ))}
           </div>
+
+          {nextCursor && (
+            <button
+              type="button"
+              onClick={() => loadHistory(false)}
+              disabled={historyLoading}
+              className="
+                rounded-full px-5 py-2 text-sm font-medium transition
+                border border-zinc-300 hover:bg-rose-50
+                dark:border-zinc-700 dark:hover:bg-zinc-800
+                disabled:opacity-50
+              "
+            >
+              {historyLoading ? "Loading..." : "Load more"}
+            </button>
+          )}
         </div>
       )}
     </div>
