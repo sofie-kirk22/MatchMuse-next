@@ -25,7 +25,7 @@ const faqItems = [
 
 export default function FAQSection() {
   return (
-    <section id="faq" className="py-20 bg-zinc-50 dark:bg-black">
+    <section id="faq" className="py-20 bg-rose-100 dark:bg-black">
       <div className="mx-auto max-w-3xl px-6 space-y-8">
         <div className="flex items-center justify-between">
           <h2 className="text-3xl font-semibold">FAQs</h2>

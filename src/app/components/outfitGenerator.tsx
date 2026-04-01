@@ -92,7 +92,7 @@ export default function OutfitGenerator() {
           disabled={loading}
           className="
             rounded-full px-6 py-3 text-sm font-medium transition
-            bg-rose-200 text-black hover:bg-zinc-200 disabled:opacity-60
+            bg-rose-200 text-black hover:bg-rose-300 disabled:opacity-60
             dark:bg-white dark:text-black dark:hover:bg-zinc-200
           "
         >
@@ -104,7 +104,7 @@ export default function OutfitGenerator() {
           onClick={() => setShowHistory((v) => !v)}
           className="
             rounded-full px-6 py-3 text-sm font-medium transition
-            border border-zinc-300 hover:bg-zinc-100
+            border border-zinc-300 hover:bg-rose-50
             dark:border-zinc-700 dark:hover:bg-zinc-800
           "
         >

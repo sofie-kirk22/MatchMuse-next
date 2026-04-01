@@ -4,8 +4,8 @@ import { useState } from "react";
 
 const links = [
   { href: "#about", label: "About" },
-  { href: "#projects", label: "Projects" },
-  { href: "#contact", label: "Contact" },
+  { href: "#generate", label: "Try MatchMuse" },
+  { href: "#faq", label: "FAQ" },
 ];
 
 export default function TopNav() {
@@ -16,7 +16,7 @@ export default function TopNav() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-zinc-200 bg-white/70 backdrop-blur-md dark:border-zinc-800 dark:bg-black/70">
+    <nav className="sticky top-0 z-50 border-b border-zinc-200 bg-rose-200 backdrop-blur-md dark:border-zinc-800 dark:bg-black/70">
       <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
         {/* Brand */}
         <a

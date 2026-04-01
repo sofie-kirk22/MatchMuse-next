@@ -22,7 +22,9 @@ export default function FAQAccordion({ items }: { items: FAQItem[] }) {
         return (
           <div
             key={item.question}
-            className="rounded-xl border border-zinc-200 dark:border-zinc-800"
+            className="rounded-xl border border-zinc-300 transition
+            bg-rose-200 text-black hover:bg-rose-300 disabled:opacity-60
+            dark:bg-white dark:text-black dark:hover:bg-zinc-200 dark:border-zinc-800"
           >
             <button
               className="w-full text-left p-5 font-medium flex justify-between items-center"
