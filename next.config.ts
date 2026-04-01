@@ -1,15 +1,8 @@
 import type { NextConfig } from "next";
 
-const repo = "my-project-next";
-
-const nextConfig : NextConfig = {
-  output: "export",
-  basePath: `/${repo}`,
-  assetPrefix: `/${repo}/`,
-  images: {
-    unoptimized: true,
-  },
+const nextConfig: NextConfig = {
+  /* config options here */
+  reactCompiler: true,
 };
 
 export default nextConfig;
-
