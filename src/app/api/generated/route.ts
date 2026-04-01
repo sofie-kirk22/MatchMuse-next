@@ -10,16 +10,21 @@ export async function GET(req: NextRequest) {
 
     const { blobs, cursor: nextCursor, hasMore } = await list({
       prefix: "Generated_outfits/",
-      limit: 6,
+      limit: 20,
       cursor,
     });
 
-    const items = blobs
+    const imageBlobs = blobs.filter((b) =>
+      /\.(png|jpe?g|webp)$/i.test(b.pathname)
+    );
+
+    const items = imageBlobs
       .slice()
       .sort(
         (a, b) =>
           new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
       )
+      .slice(0, 6)
       .map((b) => ({
         filename: b.pathname.replace("Generated_outfits/", ""),
         url: b.url,
