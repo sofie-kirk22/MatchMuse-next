@@ -12,7 +12,7 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const uploadsRoot = path.join(process.cwd(), "Uploaded_articles");
 
-const CATEGORIES = ["tops", "bottoms", "shoes", "accessories", "outerwear"] as const;
+const CATEGORIES = ["Tops", "Bottoms", "Shoes", "Accessories", "Outerwear"] as const;
 
 function pickOne(category: string) {
   const folder = path.join(uploadsRoot, category);
@@ -46,19 +46,19 @@ For each image (top, bottom, shoes, accessories, outerwear), include:
   const content: any[] = [
     { type: "input_text", text: prompt },
 
-    { type: "input_text", text: "top:" },
+    { type: "input_text", text: "Top:" },
     { type: "input_image", image_url: toDataUrl(localPaths.top) },
 
-    { type: "input_text", text: "bottom:" },
+    { type: "input_text", text: "Bottom:" },
     { type: "input_image", image_url: toDataUrl(localPaths.bottom) },
 
-    { type: "input_text", text: "shoes:" },
+    { type: "input_text", text: "Shoes:" },
     { type: "input_image", image_url: toDataUrl(localPaths.shoes) },
 
-    { type: "input_text", text: "accessories:" },
+    { type: "input_text", text: "Accessories:" },
     { type: "input_image", image_url: toDataUrl(localPaths.accessories) },
 
-    { type: "input_text", text: "outerwear:" },
+    { type: "input_text", text: "Outerwear:" },
     { type: "input_image", image_url: toDataUrl(localPaths.outerwear) },
   ];
 
