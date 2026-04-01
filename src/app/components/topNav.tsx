@@ -24,7 +24,7 @@ export default function TopNav() {
           className="text-sm font-semibold tracking-wide hover:opacity-70 transition"
           onClick={closeMenu}
         >
-          Sofie Kirk Nielsen
+          MatchMuse
         </a>
 
         {/* Desktop links */}
