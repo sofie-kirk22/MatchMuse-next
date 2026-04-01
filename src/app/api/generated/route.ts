@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
 
     const { blobs, cursor: nextCursor, hasMore } = await list({
       prefix: "Generated_outfits/",
-      limit: 20,
+      limit: 6,
       cursor,
     });
 
@@ -24,7 +24,6 @@ export async function GET(req: NextRequest) {
         (a, b) =>
           new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
       )
-      .slice(0, 6)
       .map((b) => ({
         filename: b.pathname.replace("Generated_outfits/", ""),
         url: b.url,
