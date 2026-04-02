@@ -13,15 +13,17 @@ const ALLOWED_CATEGORIES = [
 ] as const;
 
 function isValidCategory(category: string) {
-  return ALLOWED_CATEGORIES.includes(category as (typeof ALLOWED_CATEGORIES)[number]);
+  return ALLOWED_CATEGORIES.includes(
+    category as (typeof ALLOWED_CATEGORIES)[number]
+  );
 }
 
 export async function GET(
   _req: NextRequest,
-  context: { params: Promise<{ category: string }> }
+  { params }: { params: { category: string } }
 ) {
   try {
-    const { category } = await context.params;
+    const { category } = params;
 
     if (!isValidCategory(category)) {
       return NextResponse.json({ error: "Invalid category" }, { status: 400 });
@@ -55,17 +57,19 @@ export async function GET(
 
 export async function POST(
   req: NextRequest,
-  context: { params: Promise<{ category: string }> }
+  { params }: { params: { category: string } }
 ) {
   try {
-    const { category } = await context.params;
+    const { category } = params;
 
     if (!isValidCategory(category)) {
       return NextResponse.json({ error: "Invalid category" }, { status: 400 });
     }
 
     const formData = await req.formData();
-    const files = formData.getAll("images").filter((v): v is File => v instanceof File);
+    const files = formData
+      .getAll("images")
+      .filter((v): v is File => v instanceof File);
 
     if (!files.length) {
       return NextResponse.json({ error: "No files uploaded" }, { status: 400 });
@@ -94,9 +98,6 @@ export async function POST(
     });
   } catch (e: any) {
     console.error("Upload failed:", e?.message || e);
-    return NextResponse.json(
-      { error: "Upload failed" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
 }
