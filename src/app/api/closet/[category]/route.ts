@@ -20,10 +20,10 @@ function isValidCategory(category: string) {
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { category: string } }
+  { params }: { params: Promise<{ category: string }> }
 ) {
   try {
-    const { category } = params;
+    const { category } = await params;
 
     if (!isValidCategory(category)) {
       return NextResponse.json({ error: "Invalid category" }, { status: 400 });
@@ -57,10 +57,10 @@ export async function GET(
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { category: string } }
+  { params }: { params: Promise<{ category: string }> }
 ) {
   try {
-    const { category } = params;
+    const { category } = await params;
 
     if (!isValidCategory(category)) {
       return NextResponse.json({ error: "Invalid category" }, { status: 400 });
