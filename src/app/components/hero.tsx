@@ -59,7 +59,7 @@ export default function Hero() {
                 </div>
 
                 {/* IMAGE */}
-                <div className="relative">
+                <div className="relative w-full h-auto rounded-3xl">
                     <Icon lightSrc={"/images/HeroImage.png"} darkSrc={"/images/HeroImage_darkmode.png"} alt={"HeroImage"} size={500} />
                 </div>
             </div>
