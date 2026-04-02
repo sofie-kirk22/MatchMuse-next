@@ -23,7 +23,7 @@ export default function Hero() {
                     <h1 className="text-4xl font-semibold leading-tight md:text-5xl">
                         Design Your Outfits Using <br />
                         <span className="text-rose-400">
-                            Machine Learning Software
+                            OpenAI Image Generation
                         </span>
                     </h1>
 
