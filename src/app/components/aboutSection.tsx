@@ -11,13 +11,13 @@ export default function AboutSection() {
             <p>
               At MatchMuse, we believe that your closet should feel less like chaos
               and more like a curated gallery of self-expression. Founded with the
-              vision of simplifying personal style, MatchMuse uses machine learning
+              vision of simplifying personal style, MatchMuse uses AI technology
               to help you match and combine outfits based on color harmony,
               contrast theory, and personal preference.
             </p>
 
             <p>
-              What started as a small side project between a data scientist and a
+              What started as a small side project for a computer scientist and
               fashion enthusiast has grown into a tool that empowers people to
               rediscover the potential of the clothes they already own. Our mission
               is to take the guesswork out of getting dressed.
@@ -45,7 +45,7 @@ export default function AboutSection() {
             </p>
 
             <p>
-              Fashion isn’t about following trends — it’s about discovering what
+              Fashion isn’t about following trends, it’s about discovering what
               makes you feel most like yourself. MatchMuse amplifies your own style
               by revealing combinations you may not have noticed before.
             </p>
