@@ -4,9 +4,10 @@ import { useState } from "react";
 import Icon from "./icons";
 
 const links = [
-  { href: "#about", label: "About" },
-  { href: "#generate", label: "Try MatchMuse" },
-  { href: "#faq", label: "FAQ" },
+  { href: "/#about", label: "About" },
+  { href: "/#generate", label: "Try MatchMuse" },
+  { href: "/closet", label: "Visit Closet"},
+  { href: "/#faq", label: "FAQ" },
 ];
 
 export default function TopNav() {
@@ -21,7 +22,7 @@ export default function TopNav() {
       <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
         {/* Brand */}
         <a
-          href="#"
+          href="/"
           className="flex items-center gap-2 text-sm font-semibold tracking-wide hover:opacity-70 transition"
           onClick={closeMenu}
         >
