@@ -41,7 +41,7 @@ export default function Hero() {
                                 dark:bg-white dark:text-black dark:hover:bg-zinc-200
                             "
                         >
-                            Build Your Closet!
+                            Build Your Closet !
                         </a>
 
                         <a
