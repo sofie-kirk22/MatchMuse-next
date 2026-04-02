@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
 
     const { blobs, cursor: nextCursor, hasMore } = await list({
       prefix: "Generated_outfits/",
-      limit: 6,
+      limit: 7,
       cursor,
     });
 
