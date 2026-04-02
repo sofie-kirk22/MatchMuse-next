@@ -37,7 +37,7 @@ export default function Hero() {
                         <a
                             href="/closet"
                             className="
-                                rounded-full px-6 py-3 text-sm font-medium transition
+                                rounded-full px-6 py-3 text-sm font-semibold transition
                                 bg-rose-200 text-black hover:bg-rose-300
                                 dark:bg-white dark:text-black dark:hover:bg-zinc-200
                             "
