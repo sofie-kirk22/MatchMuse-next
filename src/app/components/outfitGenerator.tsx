@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import OutfitGeneratorActions from "./outfitGeneratorActions";
+import OutfitPreview from "./outfitPreview";
+import OutfitHistory from "./outfitHistory";
 
 type GenerateResponse =
   | { imageUrl: string; attributes?: unknown }
@@ -96,6 +99,12 @@ export default function OutfitGenerator() {
     }
   }
 
+  function handleRefreshHistory() {
+    setHistory([]);
+    setNextCursor(null);
+    loadHistory(true);
+  }
+
   useEffect(() => {
     if (showHistory) {
       setHistory([]);
@@ -106,115 +115,24 @@ export default function OutfitGenerator() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap gap-3">
-        <button
-          type="button"
-          onClick={handleGenerate}
-          disabled={loading}
-          className="
-            rounded-full px-6 py-3 text-sm font-medium transition
-            bg-rose-200 text-black hover:bg-rose-300 disabled:opacity-60
-            dark:bg-white dark:text-black dark:hover:bg-zinc-200
-          "
-        >
-          {loading ? "Generating..." : "Generate outfit"}
-        </button>
+      <OutfitGeneratorActions
+        loading={loading}
+        showHistory={showHistory}
+        onGenerate={handleGenerate}
+        onToggleHistory={() => setShowHistory((v) => !v)}
+      />
 
-        <button
-          type="button"
-          onClick={() => setShowHistory((v) => !v)}
-          className="
-            rounded-full px-6 py-3 text-sm font-medium transition
-            border border-zinc-300 hover:bg-rose-50
-            dark:border-zinc-700 dark:hover:bg-zinc-800
-          "
-        >
-          {showHistory ? "Hide history" : "Show history"}
-        </button>
-      </div>
-
-      {error && (
-        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-      )}
-
-      {imageUrl && (
-        <img
-          src={imageUrl}
-          alt="Generated outfit preview"
-          className="w-full max-w-md rounded-2xl border border-zinc-200 dark:border-zinc-800"
-        />
-      )}
+      <OutfitPreview imageUrl={imageUrl} error={error} />
 
       {showHistory && (
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-medium">Previously generated</h3>
-
-            <button
-              type="button"
-              onClick={() => {
-                setHistory([]);
-                setNextCursor(null);
-                loadHistory(true);
-              }}
-              disabled={historyLoading}
-              className="text-sm underline hover:opacity-70 transition disabled:opacity-50"
-            >
-              {historyLoading ? "Refreshing..." : "Refresh"}
-            </button>
-          </div>
-
-          {historyError && (
-            <p className="text-sm text-red-600 dark:text-red-400">
-              {historyError}
-            </p>
-          )}
-
-          {!historyLoading && history.length === 0 && !historyError && (
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              No generated outfits yet.
-            </p>
-          )}
-
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {history.map((item) => (
-              <a
-                key={item.url}
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800"
-                title={item.filename}
-              >
-                <img
-                  src={item.url}
-                  alt={item.filename}
-                  className="h-40 w-full object-cover transition duration-500 group-hover:scale-105"
-                  loading="lazy"
-                />
-                <div className="px-3 py-2 text-xs text-zinc-600 dark:text-zinc-400">
-                  {new Date(item.uploadedAt).toLocaleDateString()}
-                </div>
-              </a>
-            ))}
-          </div>
-
-          {nextCursor && (
-            <button
-              type="button"
-              onClick={() => loadHistory(false)}
-              disabled={historyLoading}
-              className="
-                rounded-full px-5 py-2 text-sm font-medium transition
-                border border-zinc-300 hover:bg-rose-50
-                dark:border-zinc-700 dark:hover:bg-zinc-800
-                disabled:opacity-50
-              "
-            >
-              {historyLoading ? "Loading..." : "Load more"}
-            </button>
-          )}
-        </div>
+        <OutfitHistory
+          history={history}
+          historyLoading={historyLoading}
+          historyError={historyError}
+          nextCursor={nextCursor}
+          onRefresh={handleRefreshHistory}
+          onLoadMore={() => loadHistory(false)}
+        />
       )}
     </div>
   );
