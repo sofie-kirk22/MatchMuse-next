@@ -22,7 +22,7 @@ export default function Hero() {
                 <div className="space-y-6">
                     <h1 className="text-4xl font-semibold leading-tight md:text-5xl">
                         Design Your Outfits Using <br />
-                        <span className="text-rose-300">
+                        <span className="text-rose-400">
                             Machine Learning Software
                         </span>
                     </h1>
