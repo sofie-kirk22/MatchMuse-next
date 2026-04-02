@@ -103,6 +103,34 @@ function ClosetCategoryCard({
         }
     }
 
+    async function handleDelete(itemUrl: string) {
+        const confirmed = window.confirm("Delete this clothing item?");
+        if (!confirmed) return;
+
+        setError(null);
+
+        try {
+            const res = await fetch(`/api/closet/${category}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ url: itemUrl }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                setError(data?.error || "Delete failed");
+                return;
+            }
+
+            setItems((prev) => prev.filter((item) => item.url !== itemUrl));
+        } catch {
+            setError("Network error while deleting.");
+        }
+    }
+
     useEffect(() => {
         loadItems();
     }, []);
@@ -162,21 +190,51 @@ function ClosetCategoryCard({
             ) : (
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                     {items.map((item) => (
-                        <a
+                        <div
                             key={item.url}
-                            href={item.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
                             className="group overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-800"
                             title={item.filename}
                         >
-                            <img
-                                src={item.url}
-                                alt={item.filename}
-                                className="h-32 w-full object-cover transition duration-500 group-hover:scale-105"
-                                loading="lazy"
-                            />
-                        </a>
+                            <a
+                                href={item.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block"
+                            >
+                                <img
+                                    src={item.url}
+                                    alt={item.filename}
+                                    className="h-32 w-full object-cover transition duration-500 group-hover:scale-105"
+                                    loading="lazy"
+                                />
+                            </a>
+
+                            <div className="flex items-center justify-between gap-2 px-3 py-2">
+                                <a
+                                    href={item.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="
+                                        text-xs font-medium underline transition
+                                        hover:opacity-70
+                                    "
+                                >
+                                    View →
+                                </a>
+
+                                <button
+                                    type="button"
+                                    onClick={() => handleDelete(item.url)}
+                                    className="
+                                        rounded-full px-3 py-1 text-xs font-medium transition
+                                        border border-red-200 text-red-600 hover:bg-red-50
+                                        dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-950/30
+                                    "
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
                     ))}
                 </div>
             )}

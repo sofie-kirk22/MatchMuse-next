@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { list, put } from "@vercel/blob";
+import { list, put, del } from "@vercel/blob";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -99,5 +99,32 @@ export async function POST(
   } catch (e: any) {
     console.error("Upload failed:", e?.message || e);
     return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ category: string }> }
+) {
+  try {
+    const { category } = await params;
+
+    if (!isValidCategory(category)) {
+      return NextResponse.json({ error: "Invalid category" }, { status: 400 });
+    }
+
+    const body = await req.json();
+    const url = body?.url;
+
+    if (!url || typeof url !== "string") {
+      return NextResponse.json({ error: "Missing blob URL" }, { status: 400 });
+    }
+
+    await del(url);
+
+    return NextResponse.json({ message: "Item deleted successfully" });
+  } catch (e: any) {
+    console.error("Delete failed:", e?.message || e);
+    return NextResponse.json({ error: "Delete failed" }, { status: 500 });
   }
 }
