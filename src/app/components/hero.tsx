@@ -50,7 +50,7 @@ export default function Hero() {
                             className="
                                 rounded-full px-6 py-3 text-sm font-medium transition
                                 border border-zinc-300 bg-rose-200 hover:bg-rose-50
-                                dark:border-zinc-700 dark: bg-zinc-900 dark:hover:bg-zinc-800
+                                dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800
                             "
                         >
                             Try Demo
