@@ -9,7 +9,6 @@ export default function Page() {
   return (
     <>
       <TopNav />
-      <main className="mt-12">
         {/* HERO */}
         <Hero />
 
@@ -40,7 +39,6 @@ export default function Page() {
 
         {/* FAQ SECTION */}
         <FAQSection />
-      </main>
     </>
   );
 }
