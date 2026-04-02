@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Icon from "./icons";
 
 export default function Hero() {
     return (
@@ -59,14 +60,7 @@ export default function Hero() {
 
                 {/* IMAGE */}
                 <div className="relative">
-                    <Image
-                        src="/images/HeroImage.png"
-                        alt="Closet outfit matching illustration"
-                        width={500}
-                        height={500}
-                        className="w-full h-auto rounded-3xl"
-                        priority
-                    />
+                    <Icon lightSrc={"/images/HeroImage.png"} darkSrc={"/images/HeroImage_darkmode.png"} alt={"HeroImage"} size={500} />
                 </div>
             </div>
         </section>
