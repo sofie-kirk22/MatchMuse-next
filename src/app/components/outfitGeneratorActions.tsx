@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 type OutfitGeneratorActionsProps = {
     loading: boolean;
     showHistory: boolean;
@@ -37,6 +39,17 @@ export default function OutfitGeneratorActions({
             >
                 {showHistory ? "Hide history" : "Show history"}
             </button>
+
+            <Link
+              href="/closet"
+              className="
+              rounded-full px-6 py-3 text-sm font-medium transition
+              border border-zinc-300 bg-rose-100/75 hover:bg-rose-50
+              dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800
+            "
+            >
+              Go to your closet
+            </Link>
         </div>
     );
 }
