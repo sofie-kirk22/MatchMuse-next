@@ -8,14 +8,6 @@ export default function ClosetPage() {
             <TopNav />
             <main className="min-h-screen bg-rose-100 dark:bg-black py-20">
 
-                <div className="
-                    absolute inset-0 pointer-events-none
-                    bg-gradient-to-b
-                    from-rose-300/70 to-transparent
-                    dark:from-zinc-800 dark:to-black
-                "
-                />
-
                 <div className="mx-auto max-w-6xl px-6 space-y-8 absolute inset-0 pointer-events-none bg-gradient-to-b from-rose-300/70 to-transparent dark:from-zinc-800 dark:to-black">
                     <h1 id="closet" className="text-4xl font-semibold">Your Closet</h1>
                     <p className="text-zinc-600 dark:text-zinc-400">
