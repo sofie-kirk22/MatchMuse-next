@@ -2,12 +2,16 @@ import TopNav from "./components/topNav";
 import FAQSection from "./components/FAQSection";
 import AboutSection from "./components/aboutSection";
 import OutfitGenerator from "./components/outfitGenerator";
+import Hero from "./components/hero";
 import Link from "next/link";
 
 export default function Page() {
   return (
     <>
       <TopNav />
+
+      {/* HERO */}
+      <Hero />
 
       {/* ABOUT SECTION */}
       <AboutSection />
