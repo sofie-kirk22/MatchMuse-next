@@ -36,21 +36,21 @@ export default function Hero() {
                         <a
                             href="/closet"
                             className="
-                rounded-full px-6 py-3 text-sm font-medium transition
-                bg-rose-200 text-black hover:bg-rose-300
-                dark:bg-white dark:text-black dark:hover:bg-zinc-200
-              "
+                                rounded-full px-6 py-3 text-sm font-medium transition
+                                bg-rose-200 text-black hover:bg-rose-300
+                                dark:bg-white dark:text-black dark:hover:bg-zinc-200
+                            "
                         >
-                            Start Designing
+                            Build Your Closet!
                         </a>
 
                         <a
                             href="#generate"
                             className="
-                rounded-full px-6 py-3 text-sm font-medium transition
-                border border-zinc-300 hover:bg-rose-50
-                dark:border-zinc-700 dark:hover:bg-zinc-800
-              "
+                                rounded-full px-6 py-3 text-sm font-medium transition
+                                border border-zinc-300 hover:bg-rose-50
+                                dark:border-zinc-700 dark:hover:bg-zinc-800
+                            "
                         >
                             Try Demo
                         </a>
