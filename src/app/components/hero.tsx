@@ -6,11 +6,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="
-        relative overflow-hidden
-        bg-rose-100 dark:bg-black
-        pt-24 pb-16
-      "
+      className="relative mt-12 overflow-hidden bg-rose-100 dark:bg-black pt-24 pb-16"
     >
       {/* subtle gradient glow */}
       <div className="absolute inset-0 bg-gradient-to-b from-rose-200/40 to-transparent pointer-events-none" />
