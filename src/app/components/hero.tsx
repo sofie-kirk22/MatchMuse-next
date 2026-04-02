@@ -65,6 +65,7 @@ export default function Hero() {
                         darkSrc={"/images/HeroImage_darkmode2.png"} 
                         alt={"HeroImage"} 
                         size={500} 
+                        className="rounded-3xl"
                     />
                 </div>
             </div>

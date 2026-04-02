@@ -5,6 +5,7 @@ type IconProps = {
   darkSrc: string;
   alt: string;
   size?: number;
+  className?: string;
 };
 
 export default function Icon({
@@ -12,6 +13,7 @@ export default function Icon({
   darkSrc,
   alt,
   size = 24,
+  className = "",
 }: IconProps) {
   return (
     <picture>
@@ -27,6 +29,7 @@ export default function Icon({
         alt={alt}
         width={size}
         height={size}
+        className={className}
         priority
       />
     </picture>
