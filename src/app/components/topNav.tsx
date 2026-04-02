@@ -54,7 +54,8 @@ export default function TopNav() {
       {/* Mobile menu */}
       <div
         id="mobile-nav"
-        className={`md:hidden border-t border-zinc-200 bg-rose-200 dark:border-zinc-800 dark:bg-black/70 ${open ? "block" : "hidden"
+        className={`md:hidden border-t border-zinc-200 bg-rose-200 dark:border-zinc-800 dark:bg-black/70 
+          ${open ? "block" : "hidden"
           }`}
       >
         <div className="mx-auto max-w-6xl px-6 py-4 flex flex-col gap-3">
