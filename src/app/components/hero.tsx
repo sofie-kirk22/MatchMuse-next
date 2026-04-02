@@ -49,8 +49,8 @@ export default function Hero() {
                             href="#generate"
                             className="
                                 rounded-full px-6 py-3 text-sm font-medium transition
-                                border border-zinc-300 hover:bg-rose-50
-                                dark:border-zinc-700 dark:hover:bg-zinc-800
+                                border border-zinc-300 bg-rose-200 hover:bg-rose-50
+                                dark:border-zinc-700 dark: bg-zinc-900 dark:hover:bg-zinc-800
                             "
                         >
                             Try Demo
