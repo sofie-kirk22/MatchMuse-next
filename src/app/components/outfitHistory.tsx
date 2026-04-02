@@ -78,8 +78,8 @@ export default function OutfitHistory({
                     disabled={historyLoading}
                     className="
                         rounded-full px-5 py-2 text-sm font-medium transition
-                        border border-zinc-300 hover:bg-rose-50
-                        dark:border-zinc-700 dark:hover:bg-zinc-800
+                        border border-zinc-300 bg-rose-100/75 hover:bg-rose-50
+                        dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800
                         disabled:opacity-50
                     "
                 >
