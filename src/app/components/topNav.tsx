@@ -6,7 +6,7 @@ import Icon from "./icons";
 const links = [
   { href: "/#about", label: "About" },
   { href: "/#generate", label: "Try MatchMuse" },
-  { href: "/closet", label: "Visit Closet"},
+  { href: "/closet", label: "Visit Closet" },
   { href: "/#faq", label: "FAQ" },
 ];
 
@@ -54,9 +54,8 @@ export default function TopNav() {
       {/* Mobile menu */}
       <div
         id="mobile-nav"
-        className={`md:hidden border-t border-zinc-200 dark:border-zinc-800 ${
-          open ? "block" : "hidden"
-        }`}
+        className={`md:hidden border-t border-zinc-200 bg-rose-200 dark:border-zinc-800 dark:bg-black/70 ${open ? "block" : "hidden"
+          }`}
       >
         <div className="mx-auto max-w-6xl px-6 py-4 flex flex-col gap-3">
           {links.map((l) => (
