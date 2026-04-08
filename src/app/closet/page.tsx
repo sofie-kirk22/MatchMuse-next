@@ -22,7 +22,7 @@ export default function ClosetPage() {
                         <p className="text-zinc-600 dark:text-zinc-400">
                             Generate an outfit from the uploaded wardrobe items and browse previous results.
                         </p>
-                        <OutfitGenerator />
+                        <OutfitGenerator showClosetLink={false}/>
                     </div>
                 </section>
             </main>

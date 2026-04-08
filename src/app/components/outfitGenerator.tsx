@@ -24,7 +24,13 @@ type HistoryResponse =
       error: string;
     };
 
-export default function OutfitGenerator() {
+type OutfitGeneratorProps = {
+  showClosetLink?: boolean;
+};
+
+export default function OutfitGenerator({
+  showClosetLink = true,
+}: OutfitGeneratorProps) {
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -120,6 +126,7 @@ export default function OutfitGenerator() {
         showHistory={showHistory}
         onGenerate={handleGenerate}
         onToggleHistory={() => setShowHistory((v) => !v)}
+        showClosetLink={showClosetLink}
       />
 
       <OutfitPreview imageUrl={imageUrl} error={error} />
