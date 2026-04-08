@@ -1,9 +1,15 @@
 import ClosetItemCard from "./closetItemCard";
 
 type ClosetItem = {
+  id: number;
   filename: string;
   url: string;
   uploadedAt: string;
+  alt: string | null;
+  garmentType: string | null;
+  colors: string[];
+  styles: string[];
+  materials: string[];
 };
 
 type ClosetCategoryContentProps = {

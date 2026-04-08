@@ -1,7 +1,13 @@
 type ClosetItem = {
+  id: number;
   filename: string;
   url: string;
   uploadedAt: string;
+  alt: string | null;
+  garmentType: string | null;
+  colors: string[];
+  styles: string[];
+  materials: string[];
 };
 
 type ClosetItemCardProps = {
@@ -26,7 +32,7 @@ export default function ClosetItemCard({
       >
         <img
           src={item.url}
-          alt={item.filename}
+          alt={item.alt || item.filename}
           className="h-32 w-full object-cover transition duration-500 group-hover:scale-105"
           loading="lazy"
         />
