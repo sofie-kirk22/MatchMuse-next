@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { list, put, del } from "@vercel/blob";
+import sql from "@/lib/db";
+import { generateGarmentMetadata } from "@/lib/garment-prompts";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -29,21 +31,43 @@ export async function GET(
       return NextResponse.json({ error: "Invalid category" }, { status: 400 });
     }
 
-    const { blobs } = await list({
-      prefix: `Uploaded_articles/${category}/`,
-    });
+    const rows = await sql<{
+      id: number;
+      filename: string;
+      image_url: string;
+      alt: string | null;
+      garment_type: string | null;
+      colors: string[];
+      styles: string[];
+      materials: string[];
+      created_at: string;
+    }[]>`
+      SELECT
+        id,
+        filename,
+        image_url,
+        alt,
+        garment_type,
+        colors,
+        styles,
+        materials,
+        created_at
+      FROM garments
+      WHERE category = ${category}
+      ORDER BY created_at DESC
+    `;
 
-    const items = blobs
-      .filter((b) => /\.(png|jpe?g|webp)$/i.test(b.pathname))
-      .sort(
-        (a, b) =>
-          new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
-      )
-      .map((b) => ({
-        filename: b.pathname.replace(`Uploaded_articles/${category}/`, ""),
-        url: b.url,
-        uploadedAt: b.uploadedAt,
-      }));
+    const items = rows.map((row) => ({
+      id: row.id,
+      filename: row.filename,
+      url: row.image_url,
+      alt: row.alt,
+      garmentType: row.garment_type,
+      colors: row.colors ?? [],
+      styles: row.styles ?? [],
+      materials: row.materials ?? [],
+      updatedAt: row.created_at,
+    }));
 
     return NextResponse.json(items);
   } catch (e: any) {
@@ -86,9 +110,63 @@ export async function POST(
         contentType: file.type || "application/octet-stream",
       });
 
+      const metadata = await generateGarmentMetadata(blob.url);
+
+      const [row] = await sql<{
+        id: number;
+        filename: string;
+        image_url: string;
+        alt: string | null;
+        garment_type: string | null;
+        colors: string[];
+        styles: string[];
+        materials: string[];
+        created_at: string; 
+      }[]>`
+        INSERT INTO garments (
+          category,
+          filename,
+          image_url,
+          blob_pathname,
+          alt,
+          garment_type,
+          colors,
+          styles,
+          materials
+        )
+        VALUES (
+          ${category},
+          ${blob.pathname.replace(`Uploaded_articles/${category}/`, "")},
+          ${blob.url},
+          ${blob.pathname},
+          ${metadata.alt},
+          ${metadata.garmentType},
+          ${metadata.colors},
+          ${metadata.styles},
+          ${metadata.materials}
+        )
+        RETURNING
+          id,
+          filename,
+          image_url,
+          alt,
+          garment_type,
+          colors,
+          styles,
+          materials,
+          created_at
+      `;
+
       uploaded.push({
-        filename: blob.pathname.replace(`Uploaded_articles/${category}/`, ""),
-        url: blob.url,
+        id: row.id,
+        filename: row.filename,
+        url: row.image_url,
+        alt: row.alt,
+        garmentType: row.garment_type,
+        colors: row.colors ?? [],
+        styles: row.styles ?? [],
+        materials: row.materials ?? [],
+        uploadedAt: row.created_at,
       });
     }
 
@@ -120,7 +198,23 @@ export async function DELETE(
       return NextResponse.json({ error: "Missing blob URL" }, { status: 400 });
     }
 
+    const rows = await sql<{ blob_pathname: string }[]>`
+      SELECT blob_pathname
+      FROM garments
+      WHERE category = ${category} AND image_url = ${url}
+      LIMIT 1
+    `;
+
+    if (!rows.length) {
+      return NextResponse.json({error: "Item not found"}, {status: 404});
+    }
+
     await del(url);
+
+    await sql`
+      DELETE FROM garments
+      WHERE category = ${category} AND image_url = ${url}
+    `;
 
     return NextResponse.json({ message: "Item deleted successfully" });
   } catch (e: any) {
