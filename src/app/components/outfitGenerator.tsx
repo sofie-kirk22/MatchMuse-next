@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import OutfitGeneratorActions from "./outfitGeneratorActions";
 import OutfitPreview from "./outfitPreview";
 import OutfitHistory from "./outfitHistory";
+import OutfitFiltersComponent from "./outfitFilters";
+import { OutfitFilters } from "@/types/outfitFilters";
 
 type GenerateResponse =
   | { imageUrl: string; attributes?: unknown }
@@ -17,12 +19,12 @@ type HistoryItem = {
 
 type HistoryResponse =
   | {
-      items: HistoryItem[];
-      nextCursor: string | null;
-    }
+    items: HistoryItem[];
+    nextCursor: string | null;
+  }
   | {
-      error: string;
-    };
+    error: string;
+  };
 
 type OutfitGeneratorProps = {
   showClosetLink?: boolean;
@@ -34,6 +36,12 @@ export default function OutfitGenerator({
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const [filters, setFilters] = useState<OutfitFilters>({
+    colors: [],
+    styles: [],
+    materials: [],
+  });
 
   const [showHistory, setShowHistory] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
@@ -75,7 +83,14 @@ export default function OutfitGenerator({
     setError(null);
 
     try {
-      const res = await fetch("/api/outfit/generate", { method: "GET" });
+      const res = await fetch("/api/outfit/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ filters }),
+      });
+
       const data: GenerateResponse = await res.json();
 
       if (!res.ok) {
@@ -121,6 +136,8 @@ export default function OutfitGenerator({
 
   return (
     <div className="space-y-6">
+      <OutfitFiltersComponent filters={filters} onChange={setFilters} />
+      
       <OutfitGeneratorActions
         loading={loading}
         showHistory={showHistory}
