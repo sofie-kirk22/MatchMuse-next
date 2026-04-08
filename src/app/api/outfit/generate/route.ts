@@ -58,20 +58,11 @@ async function getFilteredGarmentsForCategory(
       created_at
     FROM garments
     WHERE category = ${category}
-      ${colors.length
-      ? sql`AND colors && ${sql.array(colors)}`
-      : sql``
-    }
-      ${styles.length
-      ? sql`AND styles && ${sql.array(styles)}`
-      : sql``
-    }
-      ${materials.length
-      ? sql`AND materials && ${sql.array(materials)}`
-      : sql``
-    }
+      ${colors.length ? sql`AND colors && ${sql.array(colors)}::text[]` : sql``}
+      ${styles.length ? sql`AND styles && ${sql.array(styles)}::text[]` : sql``}
+      ${materials.length ? sql`AND materials && ${sql.array(materials)}::text[]` : sql``}
     ORDER BY created_at DESC
-  `;
+    `;
 
   return rows;
 }
@@ -94,15 +85,11 @@ async function generateOutfitImage(openai: OpenAI, prompt: string) {
 function describeGarment(label: string, garment: GarmentRow | null) {
   if (!garment) return `${label}: none`;
 
-  return `${label}: ${
-    garment.garment_type || label
-  }, alt "${garment.alt || garment.filename}", colors ${
-    garment.colors?.join(", ") || "unknown"
-  }, styles ${
-    garment.styles?.join(", ") || "unknown"
-  }, materials ${
-    garment.materials?.join(", ") || "unknown"
-  }.`;
+  return `${label}: ${garment.garment_type || label
+    }, alt "${garment.alt || garment.filename}", colors ${garment.colors?.join(", ") || "unknown"
+    }, styles ${garment.styles?.join(", ") || "unknown"
+    }, materials ${garment.materials?.join(", ") || "unknown"
+    }.`;
 }
 
 export async function POST(req: NextRequest) {
