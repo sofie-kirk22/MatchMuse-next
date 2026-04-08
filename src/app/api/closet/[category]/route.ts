@@ -141,9 +141,9 @@ export async function POST(
           ${blob.pathname},
           ${metadata.alt},
           ${metadata.garmentType},
-          ${metadata.colors},
-          ${metadata.styles},
-          ${metadata.materials}
+          ${sql.array(metadata.colors)},
+          ${sql.array(metadata.styles)},
+          ${sql.array(metadata.materials)}
         )
         RETURNING
           id,
