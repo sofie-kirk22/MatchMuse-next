@@ -62,7 +62,7 @@ async function getFilteredGarmentsForCategory(
       ${styles.length ? sql`AND styles && ${sql.array(styles)}::text[]` : sql``}
       ${materials.length ? sql`AND materials && ${sql.array(materials)}::text[]` : sql``}
     ORDER BY created_at DESC
-    `;
+  `;
 
   return rows;
 }
