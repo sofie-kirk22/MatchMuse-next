@@ -44,6 +44,9 @@ async function getFilteredGarmentsForCategory(
   const styles = filters.styles ?? [];
   const materials = filters.materials ?? [];
 
+  console.log("colors:", colors, Array.isArray(colors), typeof colors);
+  console.log("styles:", styles, Array.isArray(styles), typeof styles);
+  console.log("materials:", materials, Array.isArray(materials), typeof materials);
   const rows = await sql<GarmentRow[]>`
     SELECT
       id,
