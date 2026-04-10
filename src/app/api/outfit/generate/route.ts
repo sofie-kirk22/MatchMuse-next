@@ -40,13 +40,46 @@ async function getFilteredGarmentsForCategory(
   category: Category,
   filters: OutfitFilters
 ) {
-  const colors = filters.colors ?? [];
-  const styles = filters.styles ?? [];
-  const materials = filters.materials ?? [];
+  const colors = Array.isArray(filters.colors) ? filters.colors : [];
+  const styles = Array.isArray(filters.styles) ? filters.styles : [];
+  const materials = Array.isArray(filters.materials) ? filters.materials : [];
 
-  console.log("colors:", colors, Array.isArray(colors), typeof colors);
-  console.log("styles:", styles, Array.isArray(styles), typeof styles);
-  console.log("materials:", materials, Array.isArray(materials), typeof materials);
+  function buildColorsCondition(colors: string[]) {
+    if (!colors.length) return sql``;
+
+    return sql`
+      AND EXISTS (
+        SELECT 1
+        FROM unnest(colors) AS c
+        WHERE c = ANY(${colors}::text[])
+      )
+    `;
+  }
+
+  function buildStylesCondition(styles: string[]) {
+    if (!styles.length) return sql``;
+
+    return sql`
+      AND EXISTS (
+        SELECT 1
+        FROM unnest(styles) AS s
+        WHERE s = ANY(${styles}::text[])
+      )
+    `;
+  }
+
+  function buildMaterialsCondition(materials: string[]) {
+    if (!materials.length) return sql``;
+
+    return sql`
+      AND EXISTS (
+        SELECT 1
+        FROM unnest(materials) AS m
+        WHERE m = ANY(${materials}::text[])
+      )
+    `;
+  }
+
   const rows = await sql<GarmentRow[]>`
     SELECT
       id,
@@ -61,9 +94,9 @@ async function getFilteredGarmentsForCategory(
       created_at
     FROM garments
     WHERE category = ${category}
-      ${colors.length ? sql`AND colors && ${sql.array(colors)}::text[]` : sql``}
-      ${styles.length ? sql`AND styles && ${sql.array(styles)}::text[]` : sql``}
-      ${materials.length ? sql`AND materials && ${sql.array(materials)}::text[]` : sql``}
+    ${buildColorsCondition(colors)}
+    ${buildStylesCondition(styles)}
+    ${buildMaterialsCondition(materials)}
     ORDER BY created_at DESC
   `;
 
