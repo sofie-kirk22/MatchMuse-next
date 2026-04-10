@@ -7,9 +7,9 @@ type OutfitFiltersProps = {
   onChange: (filters: OutfitFilters) => void;
 };
 
-const availableColors = ["black", "white", "grey", "blue", "brown", "beige"];
+const availableColors = ["black", "white", "grey", "blue", "brown", "beige", "gold"];
 const availableStyles = ["minimalist", "casual", "streetwear", "formal"];
-const availableMaterials = ["cotton", "denim", "wool", "leather"];
+const availableMaterials = ["cotton", "denim", "wool", "leather", "metal"];
 
 function toggleValue(values: string[] | undefined, value: string) {
   const current = values ?? [];
