@@ -78,7 +78,9 @@ export default function LogOutfitForm() {
             throw new Error(data?.error || `Failed to load ${category}`);
         }
 
-        return Array.isArray(data) ? data : [];
+        return Array.isArray(data)
+            ? data.map((g: GarmentItem) => ({ ...g, id: Number(g.id) }))
+            : [];
     }
 
     async function loadAllGarments() {
