@@ -43,7 +43,7 @@ export async function GET(
       created_at: string;
     }[]>`
       SELECT
-        id,
+        id::int,
         filename,
         image_url,
         alt,
