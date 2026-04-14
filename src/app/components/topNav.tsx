@@ -7,6 +7,7 @@ const links = [
   { href: "/#about", label: "About" },
   { href: "/#generate", label: "Try MatchMuse" },
   { href: "/closet", label: "Visit Closet" },
+  { href: "/statistics", label: "See Statistics" },
   { href: "/#faq", label: "FAQ" },
 ];
 
