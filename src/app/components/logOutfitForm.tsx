@@ -133,6 +133,8 @@ export default function LogOutfitForm() {
         setError(null);
         setSuccess(null);
 
+        console.log("Sending garmentIds:", selectedGarmentIds);
+
         if (
             selectedTop == null ||
             selectedBottom == null ||
