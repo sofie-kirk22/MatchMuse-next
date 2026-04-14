@@ -1,5 +1,6 @@
 import TopNav from "../components/topNav";
 import LogOutfitForm from "../components/logOutfitForm";
+import UsageInsights from "../components/usageInsights";
 
 export default function MyStatisticsPage() {
   return (
@@ -17,13 +18,7 @@ export default function MyStatisticsPage() {
 
           <LogOutfitForm />
 
-          <section className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-md dark:border-zinc-800 dark:bg-zinc-950">
-            <h2 className="text-2xl font-semibold">Usage insights</h2>
-            <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-              This section can later show your top 3 most worn garments in each
-              category and charts for your most used items.
-            </p>
-          </section>
+          <UsageInsights />
         </div>
       </main>
     </>
