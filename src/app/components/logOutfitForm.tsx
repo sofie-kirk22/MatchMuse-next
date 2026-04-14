@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import GarmentPicker from "./garmentPicker";
 
 type Category = "tops" | "bottoms" | "shoes" | "accessories" | "outerwear";
 
@@ -31,14 +30,6 @@ type WearLogResponse =
         error: string;
         missingGarmentIds?: number[];
     };
-
-const categories: { key: Category; label: string }[] = [
-    { key: "tops", label: "Top" },
-    { key: "bottoms", label: "Bottom" },
-    { key: "shoes", label: "Shoes" },
-    { key: "outerwear", label: "Outerwear" },
-    { key: "accessories", label: "Accessories" },
-];
 
 function todayString() {
     return new Date().toISOString().split("T")[0];
@@ -78,9 +69,7 @@ export default function LogOutfitForm() {
             throw new Error(data?.error || `Failed to load ${category}`);
         }
 
-        return Array.isArray(data)
-            ? data.map((g: GarmentItem) => ({ ...g, id: Number(g.id) }))
-            : [];
+        return Array.isArray(data) ? data : [];
     }
 
     async function loadAllGarments() {
@@ -133,8 +122,6 @@ export default function LogOutfitForm() {
         setError(null);
         setSuccess(null);
 
-        console.log("Sending garmentIds:", selectedGarmentIds);
-
         if (
             selectedTop == null ||
             selectedBottom == null ||
@@ -166,8 +153,6 @@ export default function LogOutfitForm() {
             }
 
             setSuccess(data.message);
-
-            // optional reset:
             setSelectedTop(null);
             setSelectedBottom(null);
             setSelectedShoes(null);
@@ -181,36 +166,37 @@ export default function LogOutfitForm() {
     }
 
     return (
-        <div className="space-y-6 rounded-2xl border border-zinc-200 bg-white p-6 shadow-md dark:border-zinc-800 dark:bg-zinc-950">
-            <div className="space-y-2">
-                <h2 className="text-2xl font-semibold">Log your outfit</h2>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                    Pick the garments you wore on a given day to build usage statistics.
-                </p>
-            </div>
+        <section className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-md dark:border-zinc-800 dark:bg-zinc-950">
+            <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
+                <div className="space-y-1">
+                    <h2 className="text-2xl font-semibold">Log your outfit</h2>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                        Choose the pieces you wore to track wardrobe usage over time.
+                    </p>
+                </div>
 
-            <div className="space-y-2">
-                <label htmlFor="wornOn" className="text-sm font-medium">
-                    Date worn
-                </label>
-                <input
-                    id="wornOn"
-                    type="date"
-                    value={wornOn}
-                    onChange={(e) => setWornOn(e.target.value)}
-                    className="
-            rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm
-            dark:border-zinc-700 dark:bg-zinc-900
-          "
-                />
+                <div className="space-y-2">
+                    <label htmlFor="wornOn" className="block text-sm font-medium">
+                        Date worn
+                    </label>
+                    <input
+                        id="wornOn"
+                        type="date"
+                        value={wornOn}
+                        onChange={(e) => setWornOn(e.target.value)}
+                        className="rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+                    />
+                </div>
             </div>
 
             {error && (
-                <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                <p className="mb-4 text-sm text-red-600 dark:text-red-400">{error}</p>
             )}
 
             {success && (
-                <p className="text-sm text-green-600 dark:text-green-400">{success}</p>
+                <p className="mb-4 text-sm text-green-600 dark:text-green-400">
+                    {success}
+                </p>
             )}
 
             {loading ? (
@@ -219,36 +205,36 @@ export default function LogOutfitForm() {
                 </p>
             ) : (
                 <div className="space-y-8">
-                    <GarmentPicker
-                        label="Top"
+                    <PickerSection
+                        title="Top"
                         items={tops}
                         selectedId={selectedTop}
                         onSelectSingle={setSelectedTop}
                     />
 
-                    <GarmentPicker
-                        label="Bottom"
+                    <PickerSection
+                        title="Bottom"
                         items={bottoms}
                         selectedId={selectedBottom}
                         onSelectSingle={setSelectedBottom}
                     />
 
-                    <GarmentPicker
-                        label="Shoes"
+                    <PickerSection
+                        title="Shoes"
                         items={shoes}
                         selectedId={selectedShoes}
                         onSelectSingle={setSelectedShoes}
                     />
 
-                    <GarmentPicker
-                        label="Outerwear (optional)"
+                    <PickerSection
+                        title="Outerwear (optional)"
                         items={outerwear}
                         selectedId={selectedOuterwear}
                         onSelectSingle={setSelectedOuterwear}
                     />
 
-                    <GarmentPicker
-                        label="Accessories (optional)"
+                    <PickerSection
+                        title="Accessories (optional)"
                         items={accessories}
                         multiple
                         selectedIds={selectedAccessories}
@@ -259,7 +245,7 @@ export default function LogOutfitForm() {
                 </div>
             )}
 
-            <div className="flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap gap-3">
                 <button
                     type="button"
                     onClick={handleSubmit}
@@ -285,6 +271,93 @@ export default function LogOutfitForm() {
                     Refresh garments
                 </button>
             </div>
+        </section>
+    );
+}
+
+function PickerSection({
+    title,
+    items,
+    selectedId,
+    selectedIds = [],
+    multiple = false,
+    onSelectSingle,
+    onToggleMulti,
+}: {
+    title: string;
+    items: GarmentItem[];
+    selectedId?: number | null;
+    selectedIds?: number[];
+    multiple?: boolean;
+    onSelectSingle?: (id: number | null) => void;
+    onToggleMulti?: (id: number) => void;
+}) {
+    return (
+        <div className="space-y-3">
+            <div className="flex items-center justify-between gap-4">
+                <h3 className="text-xl font-medium">{title}</h3>
+                {multiple ? (
+                    <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                        {selectedIds.length} selected
+                    </span>
+                ) : (
+                    <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                        {selectedId != null ? "1 selected" : "None selected"}
+                    </span>
+                )}
+            </div>
+
+            {items.length === 0 ? (
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    No garments available in this category yet.
+                </p>
+            ) : (
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                    {items.map((item) => {
+                        const active = multiple
+                            ? selectedIds.includes(item.id)
+                            : selectedId === item.id;
+
+                        return (
+                            <button
+                                key={item.id}
+                                type="button"
+                                onClick={() => {
+                                    if (multiple) {
+                                        onToggleMulti?.(item.id);
+                                    } else {
+                                        onSelectSingle?.(active ? null : item.id);
+                                    }
+                                }}
+                                className={`group overflow-hidden rounded-xl border text-left transition ${active
+                                        ? "border-rose-300 ring-2 ring-rose-200 dark:border-white dark:ring-white/30"
+                                        : "border-zinc-200 dark:border-zinc-800"
+                                    }`}
+                                title={item.filename}
+                            >
+                                <img
+                                    src={item.url}
+                                    alt={item.alt || item.filename}
+                                    className="h-32 w-full object-cover transition duration-500 group-hover:scale-105"
+                                    loading="lazy"
+                                />
+
+                                <div className="flex items-center justify-between gap-2 px-3 py-2">
+                                    <span className="line-clamp-2 text-xs font-medium">
+                                        {item.alt || item.filename}
+                                    </span>
+
+                                    {active && (
+                                        <span className="shrink-0 rounded-full bg-rose-200 px-2 py-1 text-[10px] font-medium text-black dark:bg-white">
+                                            Selected
+                                        </span>
+                                    )}
+                                </div>
+                            </button>
+                        );
+                    })}
+                </div>
+            )}
         </div>
     );
 }
