@@ -72,7 +72,7 @@ export default function GarmentPicker({
               <img
                 src={item.url}
                 alt={item.alt || item.filename}
-                className="h-32 w-full object-cover"
+                className="h-24 w-full object-cover"
                 loading="lazy"
               />
 
