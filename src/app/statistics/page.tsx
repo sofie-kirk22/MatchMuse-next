@@ -1,6 +1,7 @@
 import TopNav from "../components/topNav";
 import LogOutfitForm from "../components/logOutfitForm";
 import UsageInsights from "../components/usageInsights";
+import StatisticsSummary from "../components/statisticsSummary";
 
 export default function MyStatisticsPage() {
   return (
@@ -19,6 +20,7 @@ export default function MyStatisticsPage() {
           <LogOutfitForm />
 
           <UsageInsights />
+          <StatisticsSummary />
         </div>
       </main>
     </>
