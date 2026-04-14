@@ -139,7 +139,7 @@ export default function LogOutfitForm() {
     setSubmitting(true);
 
     try {
-      const res = await fetch("/api/garment-wears", {
+      const res = await fetch("/api/garmentWears", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
