@@ -173,5 +173,4 @@ MatchMuse aims to:
 
 ## Author
 
-Sofie Kirk Nielsen
-Full-stack developer with focus on AI-driven user experiences
+Sofie Kirk Nielsen · Full-stack developer with focus on AI-driven user experiences
