@@ -58,7 +58,7 @@ MatchMuse is a full-stack web application that helps users generate personalized
 ---
 
 ## Architecture
-
+```
 User uploads image
         ↓
 Stored in Vercel Blob
@@ -71,12 +71,12 @@ Used for:
    - filtering
    - outfit generation
    - statistics
-
+```
    
 ---
 
 ## Project Structure
-
+```
 src/
 ├── app/
 │   ├── api/
@@ -100,7 +100,7 @@ src/
 │   └── utils/
 │
 └── types/
-
+```
 
 ---
 
